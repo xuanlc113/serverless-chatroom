@@ -7,12 +7,12 @@ import "./App.css";
 function App() {
   return (
     <Router>
-      <div>
+      <>
         <Switch>
           <Route exact path="/" children={<Home />} />
           <Route path="/:id" children={<Room />} />
         </Switch>
-      </div>
+      </>
     </Router>
   );
 }
