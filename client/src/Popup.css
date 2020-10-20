@@ -1,0 +1,55 @@
+.popup {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.popup-form {
+  background: #a2d2ff;
+  width: 30%;
+  height: 30%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  box-shadow: 0rem 0rem 1rem 1rem lightgray;
+}
+
+.popup-input-block {
+  margin: 1rem;
+}
+
+.popup-input {
+  padding: 1rem;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
+}
+
+.popup-input:focus {
+  outline: none;
+}
+
+.popup-input-error {
+  position: absolute;
+  color: red;
+  margin: 0.5rem;
+}
+
+.popup-button {
+  padding: 1rem;
+  border: none;
+  border-radius: 5px;
+}
+
+.popup-button:hover {
+  background: lightgray;
+}
+
+.popup-button:focus {
+  outline: none;
+}
