@@ -4,19 +4,58 @@
   align-items: center;
   justify-content: center;
   height: 100%;
+  background: #a2d2ff;
 }
 
 .home .title {
   position: absolute;
-  top: 25%;
+  top: 20%;
+  font-size: 5rem;
 }
 
-.home .goto input {
-  padding: 1rem;
-  margin: 2rem;
+.to-room-form {
+  display: flex;
+  justify-content: center;
+  width: 100%;
 }
 
-.home .goto button {
+.to-room-input-block {
+  margin: 2rem;
+  width: 30%;
+}
+
+.to-room-input {
+  padding: 1rem;
+  width: 100%;
+  border-radius: 5px;
+  border: none;
+}
+
+.to-room-input:focus {
+  outline: none;
+}
+
+.error {
+  border: 1px solid red;
+}
+
+.to-room-button {
   padding: 1rem;
   margin: 2rem;
+  border: none;
+  border-radius: 5px;
+}
+
+.to-room-button:hover {
+  background: lightgray;
+}
+
+.to-room-button:focus {
+  outline: none;
+}
+
+.to-room-error {
+  position: absolute;
+  color: red;
+  margin: 1rem 0.5rem;
 }
