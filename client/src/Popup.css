@@ -5,18 +5,18 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
 }
 
 .popup-form {
   background: #a2d2ff;
-  width: 30%;
-  height: 30%;
+  width: 40%;
+  height: 40%;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
-  box-shadow: 0rem 0rem 1rem 1rem lightgray;
+  /* border-radius: 5px; */
+  /* box-shadow: 0rem 0rem 1rem 1rem lightgray; */
 }
 
 .popup-input-block {

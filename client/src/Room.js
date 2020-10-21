@@ -16,7 +16,7 @@ export default function Room() {
     <div className="room">
       {popup && <Popup username={username} setUsername={setUsername} setPopup={setPopup}/>}
       <div className="sidebar">
-        <p>Room, {roomId}</p>
+        <p>Room, {roomId}. Hi, {username}</p>
         <Link to="/">Home</Link>
       </div>
       <div className="chat">

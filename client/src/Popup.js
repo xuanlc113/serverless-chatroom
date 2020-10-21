@@ -1,8 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./Popup.css";
 
 export default function Popup(props) {
     const [error, setError] = useState(false);
+    const popupRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (popupRef.current && !popupRef.current.contains(event.target)) {
+                if (props.username.length == 0) {
+                    setError(true);
+                } else {
+                    props.setPopup(false);
+                }
+            }
+        }
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener("click", handleClickOutside);
+        }
+    });
 
     const submitHandler = (event) => {
         event.preventDefault();
@@ -15,7 +32,7 @@ export default function Popup(props) {
 
     return (
         <div className="popup">
-            <form className="popup-form" onSubmit={submitHandler}>
+            <form className="popup-form" onSubmit={submitHandler} ref={popupRef}>
                 <div className="popup-input-block">
                 <input 
                     type="text" 
