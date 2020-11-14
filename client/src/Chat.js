@@ -6,7 +6,7 @@ export default function Room() {
   const [messages, setMessages] = useState([{ name: "abc", message: "hi" }]);
 
   return (
-    <div>
+    <div className="chat">
       <div className="chat-box">
         {messages.map((message) => (
           <p>{message.message}</p>

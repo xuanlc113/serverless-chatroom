@@ -1,0 +1,13 @@
+.room {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.sidebar {
+  flex: 2;
+}
+
+.chat {
+  flex: 8;
+}
