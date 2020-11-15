@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import Participants from "./Participants";
+import "./Sidebar.css";
 
 export default function Sidebar(props) {
     return (
         <div className="sidebar">
-            <p>Room, {props.roomId}. Hi, {props.username}</p>
             <Participants participants={props.participants}/>
-            <Link to="/">Home</Link>
+            <Link to="/" className="room-exit-button"><div>Exit Room</div></Link> 
         </div>
     );
 }

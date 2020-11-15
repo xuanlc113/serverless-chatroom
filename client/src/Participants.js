@@ -2,9 +2,12 @@ import React from "react";
 
 export default function Participants(props) {
     return (
-        <div className="participants">
-            {props.participants.map((name) => <Tab name={name} />)}
-        </div>
+        <>
+            <p className="participants-header">Participants</p>
+            <div className="participants-list">
+                {props.participants.map((name) => <Tab name={name} />)}
+            </div>
+        </>
     );
 }
 

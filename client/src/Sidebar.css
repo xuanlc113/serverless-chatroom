@@ -1,0 +1,43 @@
+.sidebar {
+  padding: 2rem;
+  border-right: 1px solid lightgrey;
+}
+
+.participants-header {
+  background: rgb(238, 238, 255);
+  padding: 0.5rem;
+  color: black;
+  font-size: 1rem;
+}
+
+.participants-list {
+  height: 50%;
+  background: white;
+  border-bottom: 1px solid lightgrey;
+  overflow: auto;
+}
+
+.participant-info {
+  padding: 1rem;
+  /* border: 1px solid black; */
+  /* border-radius: 5px; */
+  border-bottom: 1px solid lightgrey;
+}
+
+.room-exit-button {
+  text-decoration: none;
+  color: black;
+}
+
+.room-exit-button > div {
+  background: rgb(253, 58, 58);
+  text-align: center;
+  color: white;
+  border-radius: 1rem;
+  margin: 2rem 0;
+  padding: 1rem;
+}
+
+.room-exit-button > div:hover {
+  background: red;
+}
