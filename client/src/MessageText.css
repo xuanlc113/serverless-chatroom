@@ -1,0 +1,17 @@
+.message-container {
+  display: inline-block;
+  background: lightblue;
+  margin: 0.5rem 0;
+  max-width: 60%;
+  border-radius: 1rem;
+  word-wrap: break-word;
+}
+
+.message-name {
+  color: rgb(61, 61, 61);
+  margin: 0.5rem 1rem;
+}
+
+.message-text {
+  margin: 0.5rem 1rem 1rem;
+}
