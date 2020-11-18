@@ -1,26 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize';
 import "./Chat.css";
 import MessageText from "./MessageText";
 
-export default function Room() {
+export default function Chat(props) {
   const [roomId, setRoomId] = useState(useParams().id);
   const [messages, setMessages] = useState([
     { name: "abc", message: "The first message" }, 
     { name: "abc", message: "hi. this is the next message" }
   ]);
   const [message, setMessage] = useState("");
+  const anchor = useRef();
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    if (message != "") {
+      setMessages(prev => [...prev, {name: props.user, message: message}]);
+      setMessage("");
+    }
+  }
+
+  useEffect(() => {
+    anchor.current.scrollIntoView();
+  }, [messages])
 
   return (
     <div className="chat">
       <div className="chat-box">
         {messages.map((message) => (
-          <MessageText user={message.name} message={message.message} />
+          <MessageText user={props.user} name={message.name} message={message.message} />
         ))}
+        <div className="chat-anchor" ref={anchor}/>
       </div>
       <div className="chat-input">
-        <form className="chat-form">
+        <form className="chat-form" onSubmit={(e) => submitHandler(e)}>
           <TextareaAutosize 
             className="chat-textbox" 
             onChange={e => setMessage(e.target.value)} 

@@ -8,7 +8,7 @@ import "./Room.css";
 export default function Room() {
   const [popup, setPopup] = useState(true);
   const [roomId, setRoomId] = useState(useParams().id);
-  const [username, setUsername] = useState("");
+  const [user, setUser] = useState("user1");
   const [participants, setParticipants] = useState(["sdsad", "esr"]);
 
   useEffect(() => {
@@ -18,9 +18,9 @@ export default function Room() {
 
   return (
     <div className="room">
-      {popup && <Popup username={username} setUsername={setUsername} setPopup={setPopup}/>}
-      <Sidebar roomId={roomId} username={username} participants={participants}/>
-      <Chat />
+      {popup && <Popup user={user} setUser={setUser} setPopup={setPopup}/>}
+      <Sidebar participants={participants}/>
+      <Chat user={user}/>
     </div>
   );
 }

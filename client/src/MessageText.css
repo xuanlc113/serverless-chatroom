@@ -1,10 +1,25 @@
-.message-container {
+.message-container.user {
+  display: flex;
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.message-pad {
   display: inline-block;
   background: lightblue;
   margin: 0.5rem 0;
   max-width: 60%;
   border-radius: 1rem;
   word-wrap: break-word;
+}
+
+.message-pad.user {
+  background: pink;
+}
+
+.message-user {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .message-name {
@@ -14,4 +29,5 @@
 
 .message-text {
   margin: 0.5rem 1rem 1rem;
+  white-space: pre-wrap;
 }

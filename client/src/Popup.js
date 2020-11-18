@@ -8,7 +8,7 @@ export default function Popup(props) {
     useEffect(() => {
         function handleClickOutside(event) {
             if (popupRef.current && !popupRef.current.contains(event.target)) {
-                if (props.username.length == 0) {
+                if (props.user.length == 0) {
                     setError(true);
                 } else {
                     props.setPopup(false);
@@ -23,7 +23,7 @@ export default function Popup(props) {
 
     const submitHandler = (event) => {
         event.preventDefault();
-        if (props.username.length == 0) {
+        if (props.user.length == 0) {
             setError(true);
         } else {
             props.setPopup(false);
@@ -37,8 +37,8 @@ export default function Popup(props) {
                 <input 
                     type="text" 
                     placeholder="Enter a name" 
-                    value={props.username} 
-                    onChange={(e) => props.setUsername(e.target.value)}
+                    value={props.user} 
+                    onChange={(e) => props.setUser(e.target.value)}
                     className={"popup-input" + (error ? " error": "")}
                 />
                 {error && <p className="popup-input-error">Name cannot be empty</p>}
