@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import TextareaAutosize from 'react-textarea-autosize';
+import { IconSend, IconFile, IconX } from '@tabler/icons';
 import "./Chat.css";
 import MessageText from "./MessageText";
 
@@ -11,7 +12,10 @@ export default function Chat(props) {
     { name: "abc", message: "hi. this is the next message" }
   ]);
   const [message, setMessage] = useState("");
+  const [file, setFile] = useState(null);
   const anchor = useRef();
+  const fileUpload = useRef();
+  const send = useRef();
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -19,15 +23,32 @@ export default function Chat(props) {
       setMessages(prev => [...prev, {name: props.user, message: message}]);
       setMessage("");
     }
+    if (file != null) {
+      setFile(null);
+    }
   }
 
   useEffect(() => {
     anchor.current.scrollIntoView();
   }, [messages])
 
+  const clickUploadFile = () => {
+    fileUpload.current.click()
+  }
+
+  const uploadFile = (e) => {
+    setFile(e.target.files[0]);
+    fileUpload.current.value = "";
+    setMessage("");
+  }
+
+  const sendMessage = (e) => {
+    send.current.click();
+  }
+
   return (
     <div className="chat">
-      <div className="chat-box">
+      <div className="chat-container">
         {messages.map((message) => (
           <MessageText user={props.user} name={message.name} message={message.message} />
         ))}
@@ -35,31 +56,30 @@ export default function Chat(props) {
       </div>
       <div className="chat-input">
         <form className="chat-form" onSubmit={(e) => submitHandler(e)}>
+          <input 
+            type="file" 
+            ref={fileUpload} 
+            style={{display: "none"}} 
+            onChange={e => uploadFile(e)}
+          />
+          <IconFile className="chat-icon file" onClick={clickUploadFile}/>
+  
+          {file != null ? 
+          <div className="chat-file-box">
+            <p>{file.name}</p>
+            <IconX className="chat-icon close" onClick={() => setFile(null)}/>
+          </div>
+          :
           <TextareaAutosize 
             className="chat-textbox" 
             onChange={e => setMessage(e.target.value)} 
             value={message}
             maxRows={4}
           />
-          {/* <input type="file" /> */}
-          <button className="char-send-button" type="submit">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              class="icon icon-tabler icon-tabler-send" 
-              width="44" 
-              height="44" 
-              viewBox="0 0 24 24" 
-              stroke-width="1.5" 
-              stroke="#2196F3" 
-              fill="none" 
-              stroke-linecap="round" 
-              stroke-linejoin="round"
-            >
-              <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-              <line x1="10" y1="14" x2="21" y2="3" />
-              <path d="M21 3l-6.5 18a0.55 .55 0 0 1 -1 0l-3.5 -7l-7 -3.5a0.55 .55 0 0 1 0 -1l18 -6.5" />
-            </svg>
-          </button>
+          }
+          
+          <button type="submit" style={{display: "none"}} ref={send}/>
+          <IconSend className="chat-icon send" onClick={sendMessage}/>
         </form>
       </div>
     </div>
