@@ -24,10 +24,56 @@
 
 .message-name {
   color: rgb(61, 61, 61);
-  margin: 0.5rem 1rem;
+  margin: 0.5rem 1rem 0;
 }
 
 .message-text {
-  margin: 0.5rem 1rem 1rem;
+  margin: 0 1rem 0.5rem;
   white-space: pre-wrap;
+}
+
+.message-file {
+  display: flex;
+  align-items: center;
+  margin: 0 1rem;
+}
+
+.message-filename {
+  margin: 0rem 1rem;
+}
+
+.message-filesize {
+  margin: 0rem 1rem 0.5rem;
+  color: grey;
+}
+
+.message-icon {
+  color: #2196f3;
+}
+
+.message-icon:hover {
+  cursor: pointer;
+  background: white;
+  border-radius: 1rem;
+  padding: 2px;
+}
+
+.message-file-download {
+  margin: 0rem 1rem 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.message-file-download > .progress-bar {
+  width: 10rem;
+  background: white;
+  height: 5px;
+  margin-right: 1rem;
+}
+
+.message-file-download > .progress-bar > span {
+  display: block;
+  background: blue;
+  height: 5px;
+  z-index: 2;
 }

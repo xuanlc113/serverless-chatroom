@@ -8,8 +8,9 @@ import MessageText from "./MessageText";
 export default function Chat(props) {
   const [roomId, setRoomId] = useState(useParams().id);
   const [messages, setMessages] = useState([
-    { name: "abc", message: "The first message" }, 
-    { name: "abc", message: "hi. this is the next message" }
+    { name: "abc", message: "The first message", type:"text" }, 
+    { name: "abc", message: "hi. this is the next message", type: "text" },
+    { name: "abc", filename: "test_file1.txt", filesize: "256", type: "file"}
   ]);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
@@ -20,7 +21,7 @@ export default function Chat(props) {
   const submitHandler = (e) => {
     e.preventDefault();
     if (message != "") {
-      setMessages(prev => [...prev, {name: props.user, message: message}]);
+      setMessages(prev => [...prev, {name: props.user, message: message, type: "text"}]);
       setMessage("");
     }
     if (file != null) {
@@ -50,7 +51,7 @@ export default function Chat(props) {
     <div className="chat">
       <div className="chat-container">
         {messages.map((message) => (
-          <MessageText user={props.user} name={message.name} message={message.message} />
+          <MessageText user={props.user} {...message} />
         ))}
         <div className="chat-anchor" ref={anchor}/>
       </div>
