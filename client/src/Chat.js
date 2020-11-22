@@ -53,12 +53,15 @@ export default function Chat(props) {
     setFile(null);
   }
 
+  function mapMessages(message, prev) {
+    let name = prev < 0 ? "" : messages[prev].name;
+    return <Message user={props.user} prev={name} {...message} />;
+  }
+
   return (
     <div className="chat">
       <div className="chat-container">
-        {messages.map((message) => (
-          <Message user={props.user} {...message} />
-        ))}
+        {messages.map((message, i) => mapMessages(message, i - 1))}
         <div className="chat-anchor" ref={anchor} />
       </div>
       <div className="chat-input">

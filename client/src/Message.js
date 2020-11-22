@@ -6,12 +6,14 @@ export default function Message(props) {
   function userMessage() {
     return (
       <div className="message-container user">
-        <div className="message-pad user">
-          <p className="message-name">{props.name} </p>
+        <div className="message-bubble user">
+          {props.prev != props.name && (
+            <p className="message-name">{props.name} </p>
+          )}
           {props.type == "text" ? (
             <p className="message-text">{props.message}</p>
           ) : (
-            <SentFileMessage />
+            <SentFileMessage {...props} />
           )}
         </div>
       </div>
@@ -21,12 +23,14 @@ export default function Message(props) {
   function otherMessage() {
     return (
       <div className="message-container">
-        <div className="message-pad">
-          <p className="message-name">{props.name} </p>
+        <div className="message-bubble">
+          {props.prev != props.name && (
+            <p className="message-name">{props.name} </p>
+          )}
           {props.type == "text" ? (
             <p className="message-text">{props.message}</p>
           ) : (
-            <ReceivedFileMessage />
+            <ReceivedFileMessage {...props} />
           )}
         </div>
       </div>
@@ -50,24 +54,23 @@ export default function Message(props) {
   // );
 }
 
-function SentFileMessage(props) {
+function ReceivedFileMessage(props) {
   const [downloaded, setDownloaded] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const current = 200;
   const percent = 42;
 
-  const downloadFile = () => {
+  function downloadFile() {
     setDownloaded(true);
     setDownloading(true);
-  };
+  }
+
   return (
-    <div className="message-file">
+    <div className="message-file-container">
       <div class="message-file-info">
         <p className="message-filename">{props.filename}</p>
-        {!downloading ? (
-          <p className="message-filesize">{props.filesize}kb</p>
-        ) : (
-          <div className="message-file-download">
+        {downloading ? (
+          <div className="message-file-download-info">
             <div className="progress-bar">
               <span style={{ width: `${percent}%` }} />
             </div>
@@ -75,6 +78,8 @@ function SentFileMessage(props) {
               {current}kb/{props.filesize}kb
             </p>
           </div>
+        ) : (
+          <p className="message-filesize">{props.filesize}kb</p>
         )}
       </div>
       {!downloaded && (
@@ -87,10 +92,13 @@ function SentFileMessage(props) {
   );
 }
 
-function ReceivedFileMessage(props) {
+function SentFileMessage(props) {
   return (
-    <div className="message-file">
-      <div class="message-file-info"></div>
+    <div className="message-file-container">
+      <div class="message-file-info">
+        <p className="message-filename">{props.filename}</p>
+        <p className="message-filesize">{props.filesize}kb</p>
+      </div>
     </div>
   );
 }

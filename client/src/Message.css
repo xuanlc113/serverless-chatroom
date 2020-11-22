@@ -4,7 +4,7 @@
   text-align: right;
 }
 
-.message-pad {
+.message-bubble {
   display: inline-block;
   background: lightblue;
   margin: 0.5rem 0;
@@ -13,7 +13,7 @@
   word-wrap: break-word;
 }
 
-.message-pad.user {
+.message-bubble.user {
   background: pink;
 }
 
@@ -27,7 +27,7 @@
   white-space: pre-wrap;
 }
 
-.message-file {
+.message-file-container {
   display: flex;
   align-items: center;
   margin: 0 1rem;
@@ -53,20 +53,20 @@
   padding: 2px;
 }
 
-.message-file-download {
+.message-file-download-info {
   margin: 0rem 1rem 0.5rem;
   display: flex;
   align-items: center;
 }
 
-.message-file-download > .progress-bar {
+.message-file-download-info > .progress-bar {
   width: 10rem;
   background: white;
   height: 5px;
   margin-right: 1rem;
 }
 
-.message-file-download > .progress-bar > span {
+.message-file-download-info > .progress-bar > span {
   display: block;
   background: blue;
   height: 5px;
