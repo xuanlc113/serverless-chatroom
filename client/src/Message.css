@@ -17,11 +17,6 @@
   background: pink;
 }
 
-.message-user {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .message-name {
   color: rgb(61, 61, 61);
   margin: 0.5rem 1rem 0;

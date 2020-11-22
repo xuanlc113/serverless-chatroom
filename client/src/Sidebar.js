@@ -4,10 +4,12 @@ import Participants from "./Participants";
 import "./Sidebar.css";
 
 export default function Sidebar(props) {
-    return (
-        <div className="sidebar">
-            <Participants participants={props.participants}/>
-            <Link to="/" className="room-exit-button"><div>Exit Room</div></Link> 
-        </div>
-    );
+  return (
+    <div className="sidebar">
+      <Participants participants={props.participants} />
+      <Link to="/" className="room-exit-button">
+        <div>Exit Room</div>
+      </Link>
+    </div>
+  );
 }
