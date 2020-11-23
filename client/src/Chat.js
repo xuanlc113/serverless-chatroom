@@ -40,7 +40,7 @@ export default function Chat(props) {
   function sendMessage() {
     setMessages((prev) => [
       ...prev,
-      { name: props.user, message: message, type: "text" },
+      { name: props.user, message: message.trim(), type: "text" },
     ]);
     setMessage("");
   }

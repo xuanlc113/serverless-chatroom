@@ -7,23 +7,28 @@
 .message-bubble {
   display: inline-block;
   background: lightblue;
-  margin: 0.5rem 0;
+  margin: 0.5rem 0 0;
   max-width: 60%;
   border-radius: 1rem;
   word-wrap: break-word;
+  padding: 0.5rem 0;
 }
 
 .message-bubble.user {
   background: pink;
 }
 
+.message-bubble.prev {
+  margin: 0.3rem 0 0;
+}
+
 .message-name {
   color: rgb(61, 61, 61);
-  margin: 0.5rem 1rem 0;
+  margin: 0 1rem;
 }
 
 .message-text {
-  margin: 0 1rem 0.5rem;
+  margin: 0rem 1rem;
   white-space: pre-wrap;
 }
 
@@ -34,11 +39,11 @@
 }
 
 .message-filename {
-  margin: 0rem 1rem;
+  margin: 0rem 0.5rem;
 }
 
 .message-filesize {
-  margin: 0rem 1rem 0.5rem;
+  margin: 0 0.5rem;
   color: grey;
 }
 
@@ -46,7 +51,7 @@
   color: #2196f3;
 }
 
-.message-icon:hover {
+.message-icon.download:hover {
   cursor: pointer;
   background: white;
   border-radius: 1rem;

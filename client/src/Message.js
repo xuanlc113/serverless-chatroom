@@ -1,15 +1,12 @@
 import React, { useState } from "react";
-import { IconDownload } from "@tabler/icons";
+import { IconFile, IconDownload } from "@tabler/icons";
 import "./Message.css";
 
 export default function Message(props) {
   function userMessage() {
     return (
       <div className="message-container user">
-        <div className="message-bubble user">
-          {props.prev != props.name && (
-            <p className="message-name">{props.name} </p>
-          )}
+        <div className="message-bubble user prev">
           {props.type == "text" ? (
             <p className="message-text">{props.message}</p>
           ) : (
@@ -23,7 +20,9 @@ export default function Message(props) {
   function otherMessage() {
     return (
       <div className="message-container">
-        <div className="message-bubble">
+        <div
+          className={"message-bubble " + (props.prev == props.name && "prev")}
+        >
           {props.prev != props.name && (
             <p className="message-name">{props.name} </p>
           )}
@@ -38,20 +37,6 @@ export default function Message(props) {
   }
 
   return props.user == props.name ? userMessage() : otherMessage();
-  // return (
-  // <div
-  //   className={"message-container " + (props.user == props.name && "user")}
-  // >
-  //   <div className={"message-pad " + (props.user == props.name && "user")}>
-  //     <p className="message-name">{props.name} </p>
-  //     {props.type == "text" ? (
-  //       <p className="message-text">{props.message}</p>
-  //     ) : (
-  //       <FileMessage {...props} />
-  //     )}
-  //   </div>
-  // </div>
-  // );
 }
 
 function ReceivedFileMessage(props) {
@@ -67,6 +52,7 @@ function ReceivedFileMessage(props) {
 
   return (
     <div className="message-file-container">
+      <IconFile className="message-icon file" />
       <div class="message-file-info">
         <p className="message-filename">{props.filename}</p>
         {downloading ? (

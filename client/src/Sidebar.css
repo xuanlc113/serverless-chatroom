@@ -17,10 +17,21 @@
   overflow: auto;
 }
 
+.participants-list::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.participants-list::-webkit-scrollbar-thumb {
+  border-radius: 10px;
+  background-color: rgb(184, 184, 184);
+}
+
+.participants-list::-webkit-scrollbar-thumb:hover {
+  background-color: grey;
+}
+
 .participant-info {
   padding: 1rem;
-  /* border: 1px solid black; */
-  /* border-radius: 5px; */
   border-bottom: 1px solid lightgrey;
 }
 
