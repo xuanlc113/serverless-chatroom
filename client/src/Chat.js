@@ -8,9 +8,20 @@ import Message from "./Message";
 export default function Chat(props) {
   // const [roomId, setRoomId] = useState(useParams().id);
   const [messages, setMessages] = useState([
-    { name: "abc", message: "The first message", type: "text" },
-    { name: "abc", message: "hi. this is the next message", type: "text" },
-    { name: "abc", filename: "test_file1.txt", filesize: "256", type: "file" },
+    { name: "abc", message: "The first message", type: "text", time: "0010" },
+    {
+      name: "abc",
+      message: "hi. this is the next message",
+      type: "text",
+      time: "0011",
+    },
+    {
+      name: "abc",
+      filename: "test_file1.txt",
+      filesize: "256",
+      type: "file",
+      time: "0012",
+    },
   ]);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
@@ -40,7 +51,7 @@ export default function Chat(props) {
   function sendMessage() {
     setMessages((prev) => [
       ...prev,
-      { name: props.user, message: message.trim(), type: "text" },
+      { name: props.user, message: message.trim(), type: "text", time: "0015" },
     ]);
     setMessage("");
   }
@@ -48,7 +59,13 @@ export default function Chat(props) {
   function sendFile() {
     setMessages((prev) => [
       ...prev,
-      { name: props.user, filename: file.name, filesize: 10, type: "file" },
+      {
+        name: props.user,
+        filename: file.name,
+        filesize: 10,
+        type: "file",
+        time: "0015",
+      },
     ]);
     setFile(null);
   }

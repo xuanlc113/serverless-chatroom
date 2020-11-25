@@ -22,9 +22,22 @@
   margin: 0.3rem 0 0;
 }
 
+.message-content {
+  display: flex;
+}
+
+.message-content > p {
+  align-self: flex-end;
+}
+
 .message-name {
   color: rgb(61, 61, 61);
   margin: 0 1rem;
+}
+
+.message-time {
+  color: rgb(61, 61, 61);
+  margin: 0 0.5rem;
 }
 
 .message-text {

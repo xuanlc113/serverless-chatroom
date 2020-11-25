@@ -7,11 +7,14 @@ export default function Message(props) {
     return (
       <div className="message-container user">
         <div className="message-bubble user prev">
-          {props.type == "text" ? (
-            <p className="message-text">{props.message}</p>
-          ) : (
-            <SentFileMessage {...props} />
-          )}
+          <div className="message-content">
+            {props.type == "text" ? (
+              <p className="message-text">{props.message}</p>
+            ) : (
+              <SentFileMessage {...props} />
+            )}
+            <p className="message-time">{props.time}</p>
+          </div>
         </div>
       </div>
     );
@@ -26,11 +29,14 @@ export default function Message(props) {
           {props.prev != props.name && (
             <p className="message-name">{props.name} </p>
           )}
-          {props.type == "text" ? (
-            <p className="message-text">{props.message}</p>
-          ) : (
-            <ReceivedFileMessage {...props} />
-          )}
+          <div className="message-content">
+            {props.type == "text" ? (
+              <p className="message-text">{props.message}</p>
+            ) : (
+              <ReceivedFileMessage {...props} />
+            )}
+            <p className="message-time">{props.time}</p>
+          </div>
         </div>
       </div>
     );
