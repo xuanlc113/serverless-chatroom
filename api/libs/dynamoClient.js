@@ -8,58 +8,41 @@ export default class DynamoDBClient {
     this.messageTable = process.env.MESSAGE_TABLE;
   }
 
-  async getUser(connectionId) {
-    const params = {
-      TableName: this.userTable,
-      Key: {
-        connectionId,
-      },
-    };
-
-    try {
-      const { Item } = await this.client.get(params).promise();
-      return Item;
-    } catch (err) {
-      throw new Error("failed to get user");
-    }
-  }
-
-  async getRoomParticipants(roomId) {
-    const params = {
-      TableName: this.userTable,
-      IndexName: this.roomIndex,
-      KeyConditionExpression: "roomId = :r",
-      ExpressionAttributeValues: {
-        ":r": roomId,
-      },
-      ProjectionExpression: "connectionId",
-    };
-
-    try {
-      const { Items } = await this.client.query(params).promise();
-      console.log(Items);
-      const connectionIds = Items.map((item) => item.connectionId);
-      return connectionIds;
-    } catch (err) {
-      console.log(err);
-      throw new Error(`failed to get participants from room: ${roomId}`);
-    }
-  }
-
-  async addUser(connectionId, roomId, name) {
+  async addUser(connectionId, roomId, username) {
+    let ttl = Date.now() + 86400;
     const params = {
       TableName: this.userTable,
       Item: {
         connectionId,
         roomId,
-        name,
+        username,
+        ttl,
       },
     };
 
     try {
       await this.client.put(params).promise();
     } catch (err) {
+      console.log(err);
       throw new Error("failed to add user");
+    }
+  }
+
+  async getRoomHistory(roomId) {
+    const params = {
+      TableName: this.messageTable,
+      KeyConditionExpression: "roomId = :r",
+      ExpressionAttributeValues: {
+        ":r": roomId,
+      },
+    };
+
+    try {
+      const { Items } = await this.client.query(params).promise();
+      console.log(Items);
+      return Items;
+    } catch (err) {
+      throw new Error("failed to get user");
     }
   }
 
@@ -78,15 +61,32 @@ export default class DynamoDBClient {
     }
   }
 
-  async addRoomMessage(roomId, message, connectionId) {
-    const user = await this.getUser(connectionId);
+  async getUser(connectionId) {
+    const params = {
+      TableName: this.userTable,
+      Key: {
+        connectionId,
+      },
+    };
+
+    try {
+      const { Item } = await this.client.get(params).promise();
+      return Item;
+    } catch (err) {
+      throw new Error("failed to get user");
+    }
+  }
+
+  async addRoomMessage(roomId, dateTime, username, message, type) {
     const params = {
       TableName: this.messageTable,
       Item: {
         roomId,
-        dateTime: Date.now().toString(),
-        name: user.name,
+        dateTime,
+        username,
         message,
+        type,
+        ttl: dateTime + 86400,
       },
     };
 
@@ -97,20 +97,24 @@ export default class DynamoDBClient {
     }
   }
 
-  async getRoomHistory(roomId) {
+  async getRoomParticipants(roomId) {
     const params = {
-      TableName: this.messageTable,
+      TableName: this.userTable,
+      IndexName: this.roomIndex,
       KeyConditionExpression: "roomId = :r",
       ExpressionAttributeValues: {
         ":r": roomId,
       },
+      ProjectionExpression: "connectionId",
     };
 
     try {
       const { Items } = await this.client.query(params).promise();
-      return Items;
+      const connectionIds = Items.map((item) => item.connectionId);
+      return connectionIds;
     } catch (err) {
-      throw new Error("failed to get user");
+      console.log(err);
+      throw new Error(`failed to get participants from room: ${roomId}`);
     }
   }
 }
