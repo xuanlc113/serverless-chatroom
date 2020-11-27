@@ -6,23 +6,22 @@ import "./Chat.css";
 import Message from "./Message";
 
 export default function Chat(props) {
-  // const [roomId, setRoomId] = useState(useParams().id);
-  const [messages, setMessages] = useState([
-    { name: "abc", message: "The first message", type: "text", time: "0010" },
-    {
-      name: "abc",
-      message: "hi. this is the next message",
-      type: "text",
-      time: "0011",
-    },
-    {
-      name: "abc",
-      filename: "test_file1.txt",
-      filesize: "256",
-      type: "file",
-      time: "0012",
-    },
-  ]);
+  // const [messages, setMessages] = useState([
+  //   { name: "abc", message: "The first message", type: "text", time: "0010" },
+  //   {
+  //     name: "abc",
+  //     message: "hi. this is the next message",
+  //     type: "text",
+  //     time: "0011",
+  //   },
+  //   {
+  //     name: "abc",
+  //     filename: "test_file1.txt",
+  //     filesize: "256",
+  //     type: "file",
+  //     time: "0012",
+  //   },
+  // ]);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
   const anchor = useRef();
@@ -31,7 +30,7 @@ export default function Chat(props) {
 
   useEffect(() => {
     anchor.current.scrollIntoView();
-  }, [messages]);
+  }, [props.messages]);
 
   function changeFile(event) {
     setFile(event.target.files[0]);
@@ -49,36 +48,42 @@ export default function Chat(props) {
   }
 
   function sendMessage() {
-    setMessages((prev) => [
-      ...prev,
-      { name: props.user, message: message.trim(), type: "text", time: "0015" },
-    ]);
+    const payload = {
+      action: "message",
+      message,
+    };
+    props.wsref.current.send(JSON.stringify(payload));
     setMessage("");
+    // setMessages((prev) => [
+    //   ...prev,
+    //   { name: props.user, message: message.trim(), type: "text", time: "0015" },
+    // ]);
+    // setMessage("");
   }
 
   function sendFile() {
-    setMessages((prev) => [
-      ...prev,
-      {
-        name: props.user,
-        filename: file.name,
-        filesize: 10,
-        type: "file",
-        time: "0015",
-      },
-    ]);
-    setFile(null);
+    // setMessages((prev) => [
+    //   ...prev,
+    //   {
+    //     name: props.user,
+    //     filename: file.name,
+    //     filesize: 10,
+    //     type: "file",
+    //     time: "0015",
+    //   },
+    // ]);
+    // setFile(null);
   }
 
   function mapMessages(message, prev) {
-    let name = prev < 0 ? "" : messages[prev].name;
+    let name = prev < 0 ? "" : props.messages[prev].name;
     return <Message user={props.user} prev={name} {...message} />;
   }
 
   return (
     <div className="chat">
       <div className="chat-container">
-        {messages.map((message, i) => mapMessages(message, i - 1))}
+        {props.messages.map((message, i) => mapMessages(message, i - 1))}
         <div className="chat-anchor" ref={anchor} />
       </div>
       <div className="chat-input">
