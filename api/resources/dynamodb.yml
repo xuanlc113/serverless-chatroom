@@ -19,7 +19,9 @@ Resources:
             - AttributeName: connectionId
               KeyType: RANGE
           Projection:
-            ProjectionType: "KEYS_ONLY"
+            NonKeyAttributes:
+              - username
+            ProjectionType: INCLUDE
       BillingMode: PAY_PER_REQUEST
       TimeToLiveSpecification:
         AttributeName: ttl

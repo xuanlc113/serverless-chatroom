@@ -55,6 +55,12 @@ functions:
     events:
       - websocket: $default
 
+  joinHandler:
+    handler: handler.joinHandler
+    events:
+      - websocket:
+          route: join
+
   historyHandler:
     handler: handler.historyHandler
     events:

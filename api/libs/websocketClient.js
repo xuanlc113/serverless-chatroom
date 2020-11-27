@@ -10,8 +10,8 @@ export default class WebsocketClient {
     this.dbclient = new DynamoDbClient();
   }
 
-  async sendMessage(connections, message) {
-    const payload = { type: "message", data: message };
+  async send(connections, data, type) {
+    const payload = { type, data };
     let posts = connections.map(async (id) => {
       try {
         await this.api
@@ -27,23 +27,5 @@ export default class WebsocketClient {
     });
 
     await Promise.all(posts);
-  }
-
-  async sendHistory(connection, history) {
-    const payload = { type: "history", data: history };
-    console.log(payload);
-    try {
-      await this.api
-        .postToConnection({
-          ConnectionId: connection,
-          Data: JSON.stringify(payload),
-        })
-        .promise();
-    } catch (err) {
-      console.log(err);
-      return { statusCode: 500 };
-    }
-
-    return { statusCode: 200 };
   }
 }
