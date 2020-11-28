@@ -40,9 +40,9 @@ export default function Chat(props) {
 
   function submitHandler(event) {
     event.preventDefault();
-    if (message != "") {
+    if (message !== "") {
       sendMessage();
-    } else if (file != null) {
+    } else if (file !== null) {
       sendFile();
     }
   }
@@ -54,11 +54,6 @@ export default function Chat(props) {
     };
     props.wsref.current.send(JSON.stringify(payload));
     setMessage("");
-    // setMessages((prev) => [
-    //   ...prev,
-    //   { name: props.user, message: message.trim(), type: "text", time: "0015" },
-    // ]);
-    // setMessage("");
   }
 
   function sendFile() {
@@ -76,8 +71,15 @@ export default function Chat(props) {
   }
 
   function mapMessages(message, prev) {
-    let name = prev < 0 ? "" : props.messages[prev].name;
-    return <Message user={props.user} prev={name} {...message} />;
+    let name = prev < 0 ? "" : props.messages[prev].username;
+    return (
+      <Message
+        user={props.user}
+        prev={name}
+        {...message}
+        key={message.dateTime}
+      />
+    );
   }
 
   return (
@@ -99,7 +101,7 @@ export default function Chat(props) {
             onClick={() => fileUpload.current.click()}
           />
 
-          {file != null ? (
+          {file !== null ? (
             <div className="chat-file-box">
               <p>{file.name}</p>
               <IconX

@@ -8,7 +8,7 @@ export default function Popup(props) {
   useEffect(() => {
     function handleClickOutside(event) {
       if (popupRef.current && !popupRef.current.contains(event.target)) {
-        if (props.user.length == 0) {
+        if (props.user.length === 0) {
           setError(true);
         } else {
           props.setPopup(false);
@@ -23,7 +23,7 @@ export default function Popup(props) {
 
   function submitHandler(event) {
     event.preventDefault();
-    if (props.user.length == 0) {
+    if (props.user.length === 0) {
       setError(true);
     } else {
       props.setPopup(false);

@@ -1,19 +1,24 @@
 import React, { useState } from "react";
 import { IconFile, IconDownload } from "@tabler/icons";
+import moment from "moment";
 import "./Message.css";
 
 export default function Message(props) {
+  function convertTime() {
+    return moment.unix(props.dateTime).format("hh:mma");
+  }
+
   function userMessage() {
     return (
       <div className="message-container user">
         <div className="message-bubble user prev">
           <div className="message-content">
-            {props.type == "text" ? (
+            {props.type === "text" ? (
               <p className="message-text">{props.message}</p>
             ) : (
               <SentFileMessage {...props} />
             )}
-            <p className="message-time">{props.time}</p>
+            <p className="message-time">{convertTime()}</p>
           </div>
         </div>
       </div>
@@ -24,25 +29,27 @@ export default function Message(props) {
     return (
       <div className="message-container">
         <div
-          className={"message-bubble " + (props.prev == props.name && "prev")}
+          className={
+            "message-bubble " + (props.prev === props.username && "prev")
+          }
         >
-          {props.prev != props.name && (
-            <p className="message-name">{props.name} </p>
+          {props.prev !== props.username && (
+            <p className="message-name">{props.username}</p>
           )}
           <div className="message-content">
-            {props.type == "text" ? (
+            {props.type === "text" ? (
               <p className="message-text">{props.message}</p>
             ) : (
               <ReceivedFileMessage {...props} />
             )}
-            <p className="message-time">{props.time}</p>
+            <p className="message-time">{convertTime()}</p>
           </div>
         </div>
       </div>
     );
   }
 
-  return props.user == props.name ? userMessage() : otherMessage();
+  return props.user === props.username ? userMessage() : otherMessage();
 }
 
 function ReceivedFileMessage(props) {

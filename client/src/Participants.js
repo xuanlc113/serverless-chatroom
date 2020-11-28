@@ -6,7 +6,7 @@ export default function Participants(props) {
       <p className="participants-header">Participants</p>
       <div className="participants-list">
         {props.participants.map((name) => (
-          <Tab name={name} />
+          <Tab name={name} key={name} />
         ))}
       </div>
     </>
