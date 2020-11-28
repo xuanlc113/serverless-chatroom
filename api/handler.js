@@ -7,17 +7,21 @@ import WebsocketClient from "./libs/websocketClient";
 const dbClient = new DynamoDBClient();
 let wsClient;
 
-export const connectHandler = async (event) => {
+export const connectHandler = async () => {
   return { statusCode: 200 };
 };
 
 export const disconnectHandler = async (event) => {
-  const { connectionId } = event.requestContext;
-
+  const { connectionId, domainName, stage } = event.requestContext;
+  wsClient = new WebsocketClient(domainName, stage);
   console.log(event);
 
   try {
-    await dbClient.removeUser(connectionId);
+    const Attributes = await dbClient.removeUser(connectionId);
+    const Items = await dbClient.getRoomParticipants(Attributes.roomId);
+    const connections = Items.map((item) => item.connectionId);
+    const participants = Items.map((item) => item.username);
+    await wsClient.send(connections, participants, "join");
   } catch (err) {
     console.log(err);
     return { statusCode: 500 };
@@ -35,8 +39,6 @@ export const joinHandler = async (event) => {
     const Items = await dbClient.getRoomParticipants(room);
     const connections = Items.map((item) => item.connectionId);
     const participants = Items.map((item) => item.username);
-    console.log(connections);
-    console.log(participants);
     await wsClient.send(connections, participants, "join");
   } catch (err) {
     console.log(err);
@@ -104,7 +106,7 @@ export const defaultHandler = async (event) => {
 
   try {
     if (action == "PING") {
-      await wsClient.send([connectionId], "pong", "pong");
+      await wsClient.send([connectionId], "PONG", "PONG");
     }
   } catch (err) {
     console.log(err);

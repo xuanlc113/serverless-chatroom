@@ -50,10 +50,12 @@ export default class DynamoDBClient {
       Key: {
         connectionId,
       },
+      ReturnValues: "ALL_OLD",
     };
 
     try {
-      await this.client.delete(params).promise();
+      const { Attributes } = await this.client.delete(params).promise();
+      return Attributes;
     } catch (err) {
       throw new Error("failed to remove user");
     }

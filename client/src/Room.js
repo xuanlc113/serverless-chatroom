@@ -42,13 +42,19 @@ export default function Room() {
           case "history":
             setMessages(payload.data);
             break;
-          default:
-            //pong
+          case "PONG":
             break;
         }
       };
     }
   }, [popup]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      ws.current.send(JSON.stringify({ action: "PING" }));
+    }, 540000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="room">
