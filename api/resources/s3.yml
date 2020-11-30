@@ -1,0 +1,14 @@
+Resources:
+  fileBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: ${self:custom.fileBucket}
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ["*"]
+            AllowedMethods: [GET, PUT]
+            AllowedOrigins: ["*"]
+      LifecycleConfiguration:
+        Rules:
+          - Status: Enabled
+            ExpirationInDays: "1"

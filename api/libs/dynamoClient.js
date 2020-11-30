@@ -99,7 +99,7 @@ export default class DynamoDBClient {
     }
   }
 
-  async addRoomMessage(roomId, dateTime, username, message, type) {
+  async addRoomTextMessage(roomId, dateTime, username, message, type) {
     const params = {
       TableName: this.messageTable,
       Item: {
@@ -107,6 +107,36 @@ export default class DynamoDBClient {
         dateTime,
         username,
         message,
+        type,
+        ttl: dateTime + 86400,
+      },
+    };
+
+    try {
+      await this.client.put(params).promise();
+    } catch (err) {
+      throw new Error("failed to update room history");
+    }
+  }
+
+  async addRoomFileMessage(
+    roomId,
+    dateTime,
+    username,
+    filename,
+    filetype,
+    filesize,
+    type
+  ) {
+    const params = {
+      TableName: this.messageTable,
+      Item: {
+        roomId,
+        dateTime,
+        username,
+        filename,
+        filetype,
+        filesize,
         type,
         ttl: dateTime + 86400,
       },

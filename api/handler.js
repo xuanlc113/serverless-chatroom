@@ -1,19 +1,19 @@
 import DynamoDBClient from "./libs/dynamoClient";
 import WebsocketClient from "./libs/websocketClient";
+import * as AWS from "aws-sdk";
+import { v4 } from "uuid";
 
-// wss://89rqvefb8d.execute-api.ap-southeast-1.amazonaws.com/dev/?room=room1&username=user2
-// {"action": "history", "room": "room1"}
-// {"action": "message", "message": "message1"}
+let domainName = "89rqvefb8d.execute-api.ap-southeast-1.amazonaws.com";
 const dbClient = new DynamoDBClient();
-let wsClient;
+let wsClient = new WebsocketClient(domainName, "dev");
+const s3 = new AWS.S3();
 
-export const connectHandler = async () => {
+export const connectHandler = async (event) => {
   return { statusCode: 200 };
 };
 
 export const disconnectHandler = async (event) => {
-  const { connectionId, domainName, stage } = event.requestContext;
-  wsClient = new WebsocketClient(domainName, stage);
+  const { connectionId } = event.requestContext;
   console.log(event);
 
   try {
@@ -31,9 +31,8 @@ export const disconnectHandler = async (event) => {
 };
 
 export const joinHandler = async (event) => {
-  const { connectionId, domainName, stage } = event.requestContext;
+  const { connectionId } = event.requestContext;
   const { room, username } = JSON.parse(event.body);
-  wsClient = new WebsocketClient(domainName, stage);
   try {
     await dbClient.addUser(connectionId, room, username);
     const Items = await dbClient.getRoomParticipants(room);
@@ -49,9 +48,8 @@ export const joinHandler = async (event) => {
 };
 
 export const historyHandler = async (event) => {
-  const { connectionId, domainName, stage } = event.requestContext;
+  const { connectionId } = event.requestContext;
   const { room } = JSON.parse(event.body);
-  wsClient = new WebsocketClient(domainName, stage);
   try {
     const history = await dbClient.getRoomHistory(room);
     await wsClient.send([connectionId], history, "history");
@@ -64,12 +62,10 @@ export const historyHandler = async (event) => {
 };
 
 export const messageHandler = async (event) => {
-  const { connectionId, domainName, stage } = event.requestContext;
+  const { connectionId } = event.requestContext;
   const { message } = JSON.parse(event.body);
 
   console.log(event);
-
-  wsClient = new WebsocketClient(domainName, stage);
   try {
     const { roomId, username } = await dbClient.getUser(connectionId);
     const messageObj = {
@@ -79,7 +75,7 @@ export const messageHandler = async (event) => {
       message,
       type: "text",
     };
-    await dbClient.addRoomMessage(
+    await dbClient.addRoomTextMessage(
       roomId,
       messageObj.dateTime,
       username,
@@ -100,8 +96,7 @@ export const messageHandler = async (event) => {
 
 // client setTimeout/setInterval to ping
 export const defaultHandler = async (event) => {
-  const { connectionId, domainName, stage } = event.requestContext;
-  wsClient = new WebsocketClient(domainName, stage);
+  const { connectionId } = event.requestContext;
   const action = event.body.action;
 
   try {
@@ -114,4 +109,34 @@ export const defaultHandler = async (event) => {
   }
 
   return { statusCode: 200 };
+};
+
+// client send
+// get presigned, and upload
+// s3 event, identify folder(room)
+// update dynamodb, send to all
+
+export const generateUploadUrl = async (event) => {
+  const { room, filename, filetype } = JSON.parse(event.body);
+  const url = s3.getSignedUrl("putObject", {
+    Bucket: process.env.FILE_BUCKET,
+    Key: `${room}/${v4()}_${filename}`,
+    ContentType: filetype,
+  });
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ url }),
+  };
+};
+
+export const generateDownloadUrl = async (event) => {
+  const { filename } = JSON.parse(event.body);
+  const url = s3.getSignedUrl("getObject", {
+    Bucket: process.env.FILE_BUCKET,
+    Key: filename,
+  });
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ url }),
+  };
 };

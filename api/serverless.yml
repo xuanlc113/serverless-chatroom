@@ -4,6 +4,7 @@ custom:
   userTable: WebchatUserTable-${self:provider.stage}
   messageTable: WebchatMessageTable-${self:provider.stage}
   roomIndex: RoomIdIndex
+  fileBucket: webchat-file-bucket-${self:provider.stage}
 
 provider:
   name: aws
@@ -14,6 +15,7 @@ provider:
     USER_TABLE: ${self:custom.userTable}
     MESSAGE_TABLE: ${self:custom.messageTable}
     ROOM_INDEX: ${self:custom.roomIndex}
+    FILE_BUCKET: ${self:custom.fileBucket}
   websocketsApiName: Webchat-api
   websocketsApiRouteSelectionExpression: $request.body.action
   iamRoleStatements:
@@ -31,6 +33,15 @@ provider:
           - "/"
           - - !GetAtt userTable.Arn
             - "index/RoomIdIndex"
+
+    - Effect: "Allow"
+      Action:
+        - "s3:*"
+      Resource:
+        Fn::Join:
+          - ""
+          - - !GetAtt fileBucket.Arn
+            - "/*"
 
 package:
   individually: true
@@ -73,5 +84,21 @@ functions:
       - websocket:
           route: message
 
+  generateUploadUrl:
+    handler: handler.generateUploadUrl
+    events:
+      - http:
+          path: uploadUrl
+          method: post
+          cors: true
+
+  generateDownloadUrl:
+    handler: handler.generateDownloadUrl
+    events:
+      - http:
+          path: downloadUrl
+          method: post
+
 resources:
   - ${file(resources/dynamodb.yml)}
+  - ${file(resources/s3.yml)}

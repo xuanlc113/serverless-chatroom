@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
 import TextareaAutosize from "react-textarea-autosize";
 import { IconSend, IconFile, IconX } from "@tabler/icons";
 import "./Chat.css";

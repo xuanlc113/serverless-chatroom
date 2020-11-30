@@ -60,7 +60,7 @@ export default function Room() {
     <div className="room">
       {popup && <Popup user={user} setUser={setUser} setPopup={setPopup} />}
       <Sidebar participants={participants} wsref={ws} />
-      <Chat user={user} messages={messages} wsref={ws} />
+      <Chat user={user} messages={messages} room={room} wsref={ws} />
     </div>
   );
 }
