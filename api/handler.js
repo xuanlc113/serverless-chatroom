@@ -126,7 +126,11 @@ export const generateUploadUrl = async (event) => {
   });
   return {
     statusCode: 200,
-    body: JSON.stringify({ url }),
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
+    body: JSON.stringify(url),
   };
 };
 
@@ -138,30 +142,42 @@ export const generateDownloadUrl = async (event) => {
   });
   return {
     statusCode: 200,
-    body: JSON.stringify({ url }),
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Credentials": true,
+    },
+    body: JSON.stringify(url),
   };
 };
 
 export const fileHandler = async (event) => {
   const body = event.Records[0].s3;
   const filesize = body.object.size;
-  const [room, username, compositeFilename] = body.object.key.split("/");
+  const [roomId, username, compositeFilename] = body.object.key.split("/");
   const [id, filename] = compositeFilename.split(/_(.+)/);
 
   try {
+    const fileObj = {
+      roomId,
+      dateTime: Math.floor(Date.now() / 1000),
+      username,
+      filename,
+      filesize,
+      id,
+      type: "file",
+    };
     await dbClient.addRoomFileMessage(
-      room,
-      Math.floor(Date.now() / 1000),
+      roomId,
+      fileObj.dateTime,
       username,
       filename,
       filesize,
       id,
       "file"
     );
-    const Items = await dbClient.getRoomParticipants(room);
+    const Items = await dbClient.getRoomParticipants(roomId);
     const connections = Items.map((item) => item.connectionId);
-    const participants = Items.map((item) => item.username);
-    await wsClient.send(connections, participants, "message");
+    await wsClient.send(connections, fileObj, "message");
   } catch (err) {
     console.log(err);
     return { statusCode: 500 };

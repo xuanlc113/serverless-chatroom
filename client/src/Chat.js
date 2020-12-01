@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { IconSend, IconFile, IconX } from "@tabler/icons";
-import "./Chat.css";
+import axios from "axios";
 import Message from "./Message";
+import "./Chat.css";
 
 export default function Chat(props) {
   // const [messages, setMessages] = useState([
@@ -55,18 +56,18 @@ export default function Chat(props) {
     setMessage("");
   }
 
-  function sendFile() {
-    // setMessages((prev) => [
-    //   ...prev,
-    //   {
-    //     name: props.user,
-    //     filename: file.name,
-    //     filesize: 10,
-    //     type: "file",
-    //     time: "0015",
-    //   },
-    // ]);
-    // setFile(null);
+  async function sendFile() {
+    let posturl =
+      "https://oekin0nnr0.execute-api.ap-southeast-1.amazonaws.com/dev/uploadUrl";
+    const res = await axios.post(posturl, {
+      room: props.room,
+      username: props.user,
+      filename: file.name,
+      filetype: file.type,
+    });
+    console.log(res);
+    await axios.put(res.data, file, { headers: { "Content-Type": file.type } });
+    setFile(null);
   }
 
   function mapMessages(message, prev) {
