@@ -88,7 +88,7 @@ functions:
     handler: handler.generateUploadUrl
     events:
       - http:
-          path: uploadUrl
+          path: generateUploadUrl
           method: post
           cors: true
 
@@ -96,7 +96,7 @@ functions:
     handler: handler.generateDownloadUrl
     events:
       - http:
-          path: downloadUrl
+          path: generateDownloadUrl
           method: post
           cors: true
 

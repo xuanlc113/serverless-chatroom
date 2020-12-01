@@ -99,6 +99,23 @@ export default class DynamoDBClient {
     }
   }
 
+  // async getMessage(roomId, dateTime) {
+  //   const params = {
+  //     Tablename: this.messageTable,
+  //     Key: {
+  //       roomId,
+  //       dateTime,
+  //     },
+  //   };
+  //   try {
+  //     const { Item } = await this.client.get(params).promise();
+  //     return Item;
+  //   } catch (err) {
+  //     console.log(err);
+  //     throw new Error("failed to get message");
+  //   }
+  // }
+
   async addRoomTextMessage(roomId, dateTime, username, message, type) {
     const params = {
       TableName: this.messageTable,

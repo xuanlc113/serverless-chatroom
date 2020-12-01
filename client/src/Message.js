@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { IconFile, IconDownload } from "@tabler/icons";
 import moment from "moment";
+import axios from "axios";
 import "./Message.css";
 
 export default function Message(props) {
@@ -58,15 +59,31 @@ function ReceivedFileMessage(props) {
   const current = 200;
   const percent = 42;
 
-  function downloadFile() {
-    setDownloaded(true);
-    setDownloading(true);
+  async function downloadFile() {
+    // setDownloaded(true);
+    // setDownloading(true);
+    let posturl =
+      "https://oekin0nnr0.execute-api.ap-southeast-1.amazonaws.com/dev/generateDownloadUrl";
+    const res = await axios.post(posturl, {
+      room: props.roomId,
+      username: props.username,
+      id: props.id,
+      filename: props.filename,
+    });
+    // console.log(res);
+    // await axios.get(res.data);
+    const link = document.createElement("a");
+    link.href = res.data;
+    link.setAttribute("target", "_blank");
+    link.setAttribute("download", "download");
+    document.body.appendChild(link);
+    // link.click();
   }
 
   return (
     <div className="message-file-container">
       <IconFile className="message-icon file" />
-      <div class="message-file-info">
+      <div className="message-file-info">
         <p className="message-filename">{props.filename}</p>
         {downloading ? (
           <div className="message-file-download-info">

@@ -58,14 +58,13 @@ export default function Chat(props) {
 
   async function sendFile() {
     let posturl =
-      "https://oekin0nnr0.execute-api.ap-southeast-1.amazonaws.com/dev/uploadUrl";
+      "https://oekin0nnr0.execute-api.ap-southeast-1.amazonaws.com/dev/generateUploadUrl";
     const res = await axios.post(posturl, {
       room: props.room,
       username: props.user,
       filename: file.name,
       filetype: file.type,
     });
-    console.log(res);
     await axios.put(res.data, file, { headers: { "Content-Type": file.type } });
     setFile(null);
   }

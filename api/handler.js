@@ -8,7 +8,7 @@ const dbClient = new DynamoDBClient();
 let wsClient = new WebsocketClient(domainName, "dev");
 const s3 = new AWS.S3();
 
-export const connectHandler = async (event) => {
+export const connectHandler = async () => {
   return { statusCode: 200 };
 };
 
@@ -111,43 +111,50 @@ export const defaultHandler = async (event) => {
   return { statusCode: 200 };
 };
 
-// client send
-// get presigned, and upload
-// s3 event, identify folder(room)
-// update dynamodb, send to all
 // xmlhttprequest eventlistener progress (client)
 
 export const generateUploadUrl = async (event) => {
   const { room, username, filename, filetype } = JSON.parse(event.body);
-  const url = s3.getSignedUrl("putObject", {
-    Bucket: process.env.FILE_BUCKET,
-    Key: `${room}/${username}/${v4()}_${filename}`,
-    ContentType: filetype,
-  });
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": true,
-    },
-    body: JSON.stringify(url),
-  };
+  try {
+    const url = s3.getSignedUrl("putObject", {
+      Bucket: process.env.FILE_BUCKET,
+      Key: `${room}/${username}/${v4()}_${filename}`,
+      ContentType: filetype,
+    });
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify(url),
+    };
+  } catch (err) {
+    console.log(err);
+    return { statusCode: 500 };
+  }
 };
 
 export const generateDownloadUrl = async (event) => {
-  const { filename } = JSON.parse(event.body);
-  const url = s3.getSignedUrl("getObject", {
-    Bucket: process.env.FILE_BUCKET,
-    Key: filename,
-  });
-  return {
-    statusCode: 200,
-    headers: {
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": true,
-    },
-    body: JSON.stringify(url),
-  };
+  const { room, username, id, filename } = JSON.parse(event.body);
+  try {
+    const url = s3.getSignedUrl("getObject", {
+      Bucket: process.env.FILE_BUCKET,
+      Key: `${room}/${username}/${id}_${filename}`,
+      Expires: 60,
+    });
+    return {
+      statusCode: 200,
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Credentials": true,
+      },
+      body: JSON.stringify(url),
+    };
+  } catch (err) {
+    console.log(err);
+    return { statusCode: 500 };
+  }
 };
 
 export const fileHandler = async (event) => {
