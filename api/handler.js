@@ -115,12 +115,13 @@ export const defaultHandler = async (event) => {
 // get presigned, and upload
 // s3 event, identify folder(room)
 // update dynamodb, send to all
+// xmlhttprequest eventlistener progress (client)
 
 export const generateUploadUrl = async (event) => {
-  const { room, filename, filetype } = JSON.parse(event.body);
+  const { room, username, filename, filetype } = JSON.parse(event.body);
   const url = s3.getSignedUrl("putObject", {
     Bucket: process.env.FILE_BUCKET,
-    Key: `${room}/${v4()}_${filename}`,
+    Key: `${room}/${username}/${v4()}_${filename}`,
     ContentType: filetype,
   });
   return {
@@ -138,5 +139,35 @@ export const generateDownloadUrl = async (event) => {
   return {
     statusCode: 200,
     body: JSON.stringify({ url }),
+  };
+};
+
+export const fileHandler = async (event) => {
+  const body = event.Records[0].s3;
+  const filesize = body.object.size;
+  const [room, username, compositeFilename] = body.object.key.split("/");
+  const [id, filename] = compositeFilename.split(/_(.+)/);
+
+  try {
+    await dbClient.addRoomFileMessage(
+      room,
+      Math.floor(Date.now() / 1000),
+      username,
+      filename,
+      filesize,
+      id,
+      "file"
+    );
+    const Items = await dbClient.getRoomParticipants(room);
+    const connections = Items.map((item) => item.connectionId);
+    const participants = Items.map((item) => item.username);
+    await wsClient.send(connections, participants, "message");
+  } catch (err) {
+    console.log(err);
+    return { statusCode: 500 };
+  }
+
+  return {
+    statusCode: 200,
   };
 };

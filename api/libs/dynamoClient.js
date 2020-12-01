@@ -124,8 +124,8 @@ export default class DynamoDBClient {
     dateTime,
     username,
     filename,
-    filetype,
     filesize,
+    id,
     type
   ) {
     const params = {
@@ -135,8 +135,8 @@ export default class DynamoDBClient {
         dateTime,
         username,
         filename,
-        filetype,
         filesize,
+        id,
         type,
         ttl: dateTime + 86400,
       },

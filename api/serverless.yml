@@ -99,6 +99,14 @@ functions:
           path: downloadUrl
           method: post
 
+  fileHandler:
+    handler: handler.fileHandler
+    events:
+      - s3:
+          bucket: ${self:custom.fileBucket}
+          event: s3:ObjectCreated:*
+          existing: true
+
 resources:
   - ${file(resources/dynamodb.yml)}
   - ${file(resources/s3.yml)}
