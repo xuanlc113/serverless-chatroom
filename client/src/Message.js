@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { IconFile, IconExternalLink } from "@tabler/icons";
 import moment from "moment";
 import axios from "axios";
@@ -66,8 +66,7 @@ function ReceivedFileMessage(props) {
   }
 
   async function openFile() {
-    let posturl =
-      "https://oekin0nnr0.execute-api.ap-southeast-1.amazonaws.com/dev/generateDownloadUrl";
+    let posturl = `${process.env.REACT_APP_API_GATEWAY_URL}/generateDownloadUrl`;
     const res = await axios.post(posturl, {
       room: props.roomId,
       username: props.username,

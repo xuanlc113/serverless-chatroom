@@ -44,7 +44,7 @@ export default function Chat(props) {
 
   async function sendFile() {
     setUploading(true);
-    let posturl = `${process.env.API_GATEWAY_URL}/generateUploadUrl`;
+    let posturl = `${process.env.REACT_APP_API_GATEWAY_URL}/generateUploadUrl`;
     const res = await axios.post(
       posturl,
       {
