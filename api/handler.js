@@ -94,7 +94,6 @@ export const messageHandler = async (event) => {
   return { statusCode: 200 };
 };
 
-// client setTimeout/setInterval to ping
 export const defaultHandler = async (event) => {
   const { connectionId } = event.requestContext;
   const action = event.body.action;
@@ -110,8 +109,6 @@ export const defaultHandler = async (event) => {
 
   return { statusCode: 200 };
 };
-
-// xmlhttprequest eventlistener progress (client)
 
 export const generateUploadUrl = async (event) => {
   const { room, username, filename, filetype } = JSON.parse(event.body);

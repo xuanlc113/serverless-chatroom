@@ -64,7 +64,7 @@
 
 .chat-file-box {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   margin: 0 1rem;
   width: 90%;
@@ -92,4 +92,23 @@
 
 .chat-icon:hover {
   cursor: pointer;
+}
+
+.message-file-upload-info {
+  display: flex;
+  align-items: center;
+}
+
+.message-file-upload-info > .progress-bar {
+  width: 10rem;
+  background: white;
+  height: 5px;
+  margin-right: 1rem;
+}
+
+.message-file-upload-info > .progress-bar > span {
+  display: block;
+  background: blue;
+  height: 5px;
+  z-index: 2;
 }

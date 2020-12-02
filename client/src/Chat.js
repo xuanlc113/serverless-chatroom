@@ -6,24 +6,10 @@ import Message from "./Message";
 import "./Chat.css";
 
 export default function Chat(props) {
-  // const [messages, setMessages] = useState([
-  //   { name: "abc", message: "The first message", type: "text", time: "0010" },
-  //   {
-  //     name: "abc",
-  //     message: "hi. this is the next message",
-  //     type: "text",
-  //     time: "0011",
-  //   },
-  //   {
-  //     name: "abc",
-  //     filename: "test_file1.txt",
-  //     filesize: "256",
-  //     type: "file",
-  //     time: "0012",
-  //   },
-  // ]);
   const [message, setMessage] = useState("");
   const [file, setFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadPercent, setUploadPercent] = useState(0);
   const anchor = useRef();
   const fileUpload = useRef();
   const send = useRef();
@@ -57,16 +43,28 @@ export default function Chat(props) {
   }
 
   async function sendFile() {
-    let posturl =
-      "https://oekin0nnr0.execute-api.ap-southeast-1.amazonaws.com/dev/generateUploadUrl";
-    const res = await axios.post(posturl, {
-      room: props.room,
-      username: props.user,
-      filename: file.name,
-      filetype: file.type,
-    });
+    setUploading(true);
+    let posturl = `${process.env.API_GATEWAY_URL}/generateUploadUrl`;
+    const res = await axios.post(
+      posturl,
+      {
+        room: props.room,
+        username: props.user,
+        filename: file.name,
+        filetype: file.type,
+      },
+      {
+        onUploadProgress: function (progressEvent) {
+          setUploadPercent(
+            Math.floor((progressEvent.loaded * 100) / progressEvent.total)
+          );
+        },
+      }
+    );
     await axios.put(res.data, file, { headers: { "Content-Type": file.type } });
     setFile(null);
+    setUploading(false);
+    setUploadPercent(0);
   }
 
   function mapMessages(message, prev) {
@@ -103,10 +101,25 @@ export default function Chat(props) {
           {file !== null ? (
             <div className="chat-file-box">
               <p>{file.name}</p>
-              <IconX
-                className="chat-icon close"
-                onClick={() => setFile(null)}
-              />
+              {uploading ? (
+                <div className="message-file-upload-info">
+                  <div className="progress-bar">
+                    <span
+                      style={{
+                        width: `${uploadPercent}%`,
+                      }}
+                    />
+                  </div>
+                  <p>
+                    {Math.floor(file.size * (uploadPercent / 100))}/{file.size}
+                  </p>
+                </div>
+              ) : (
+                <IconX
+                  className="chat-icon close"
+                  onClick={() => setFile(null)}
+                />
+              )}
             </div>
           ) : (
             <TextareaAutosize

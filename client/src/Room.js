@@ -5,6 +5,10 @@ import Popup from "./Popup";
 import Sidebar from "./Sidebar";
 import "./Room.css";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 export default function Room() {
   const room = useParams().id;
   const [popup, setPopup] = useState(true);
@@ -18,16 +22,13 @@ export default function Room() {
     if (isFirstRun.current) {
       isFirstRun.current = false;
     } else {
-      const url = `wss://89rqvefb8d.execute-api.ap-southeast-1.amazonaws.com/dev`;
+      const url = process.env.REACT_APP_WEBSOCKET_URL;
       ws.current = new WebSocket(url);
       ws.current.onopen = () => {
         ws.current.send(
           JSON.stringify({ action: "join", room, username: user })
         );
         ws.current.send(JSON.stringify({ action: "history", room }));
-      };
-      ws.current.onclose = () => {
-        //try reconnect
       };
       ws.current.onmessage = (event) => {
         const payload = JSON.parse(event.data);

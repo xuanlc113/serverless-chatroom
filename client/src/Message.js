@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { IconFile, IconDownload } from "@tabler/icons";
+import { IconFile, IconExternalLink } from "@tabler/icons";
 import moment from "moment";
 import axios from "axios";
 import "./Message.css";
@@ -54,14 +54,18 @@ export default function Message(props) {
 }
 
 function ReceivedFileMessage(props) {
-  const [downloaded, setDownloaded] = useState(false);
-  const [downloading, setDownloading] = useState(false);
-  const current = 200;
-  const percent = 42;
+  function convertBytes(bytes) {
+    if (bytes > 999999) {
+      bytes /= 1000000;
+      return `${bytes.toFixed(2)}mb`;
+    } else if (bytes > 999) {
+      bytes /= 1000;
+      return `${bytes.toFixed(2)}kb`;
+    }
+    return `${bytes}b`;
+  }
 
-  async function downloadFile() {
-    // setDownloaded(true);
-    // setDownloading(true);
+  async function openFile() {
     let posturl =
       "https://oekin0nnr0.execute-api.ap-southeast-1.amazonaws.com/dev/generateDownloadUrl";
     const res = await axios.post(posturl, {
@@ -70,14 +74,11 @@ function ReceivedFileMessage(props) {
       id: props.id,
       filename: props.filename,
     });
-    // console.log(res);
-    // await axios.get(res.data);
     const link = document.createElement("a");
     link.href = res.data;
     link.setAttribute("target", "_blank");
-    link.setAttribute("download", "download");
     document.body.appendChild(link);
-    // link.click();
+    link.click();
   }
 
   return (
@@ -85,25 +86,9 @@ function ReceivedFileMessage(props) {
       <IconFile className="message-icon file" />
       <div className="message-file-info">
         <p className="message-filename">{props.filename}</p>
-        {downloading ? (
-          <div className="message-file-download-info">
-            <div className="progress-bar">
-              <span style={{ width: `${percent}%` }} />
-            </div>
-            <p>
-              {current}kb/{props.filesize}kb
-            </p>
-          </div>
-        ) : (
-          <p className="message-filesize">{props.filesize}kb</p>
-        )}
+        <p className="message-filesize">{convertBytes(props.filesize)}</p>
       </div>
-      {!downloaded && (
-        <IconDownload
-          className="message-icon download"
-          onClick={downloadFile}
-        />
-      )}
+      <IconExternalLink className="message-icon download" onClick={openFile} />
     </div>
   );
 }
@@ -111,7 +96,8 @@ function ReceivedFileMessage(props) {
 function SentFileMessage(props) {
   return (
     <div className="message-file-container">
-      <div class="message-file-info">
+      <IconFile className="message-icon file" />
+      <div className="message-file-info">
         <p className="message-filename">{props.filename}</p>
         <p className="message-filesize">{props.filesize}kb</p>
       </div>
