@@ -6,7 +6,7 @@ Resources:
       AttributeDefinitions:
         - AttributeName: connectionId
           AttributeType: S
-        - AttributeName: roomId
+        - AttributeName: room
           AttributeType: S
       KeySchema:
         - AttributeName: connectionId
@@ -14,7 +14,7 @@ Resources:
       GlobalSecondaryIndexes:
         - IndexName: ${self:custom.roomIndex}
           KeySchema:
-            - AttributeName: roomId
+            - AttributeName: room
               KeyType: HASH
             - AttributeName: connectionId
               KeyType: RANGE
@@ -32,12 +32,12 @@ Resources:
     Properties:
       TableName: ${self:custom.messageTable}
       AttributeDefinitions:
-        - AttributeName: roomId
+        - AttributeName: room
           AttributeType: S
         - AttributeName: dateTime
           AttributeType: N
       KeySchema:
-        - AttributeName: roomId
+        - AttributeName: room
           KeyType: HASH
         - AttributeName: dateTime
           KeyType: RANGE

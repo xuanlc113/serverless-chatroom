@@ -68,7 +68,7 @@ function ReceivedFileMessage(props) {
   async function openFile() {
     let posturl = `${process.env.REACT_APP_API_GATEWAY_URL}/generateDownloadUrl`;
     const res = await axios.post(posturl, {
-      room: props.roomId,
+      room: props.room,
       username: props.username,
       id: props.id,
       filename: props.filename,

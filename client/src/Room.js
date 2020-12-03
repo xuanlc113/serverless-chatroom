@@ -5,10 +5,6 @@ import Popup from "./Popup";
 import Sidebar from "./Sidebar";
 import "./Room.css";
 
-import dotenv from "dotenv";
-
-dotenv.config();
-
 export default function Room() {
   const room = useParams().id;
   const [popup, setPopup] = useState(true);

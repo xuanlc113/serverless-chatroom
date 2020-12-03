@@ -16,7 +16,11 @@ provider:
     MESSAGE_TABLE: ${self:custom.messageTable}
     ROOM_INDEX: ${self:custom.roomIndex}
     FILE_BUCKET: ${self:custom.fileBucket}
-  websocketsApiName: Webchat-api
+    WEBSOCKET_URL: !GetAtt WebsocketsApi.ApiEndpoint
+    STAGE: ${self:provider.stage}
+  stackName: serverless-chat
+  apiName: serverless-chat-file-api
+  websocketsApiName: serverless-chat-websocket-api
   websocketsApiRouteSelectionExpression: $request.body.action
   iamRoleStatements:
     - Effect: "Allow"

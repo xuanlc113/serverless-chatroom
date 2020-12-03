@@ -8,13 +8,13 @@ export default class DynamoDBClient {
     this.messageTable = process.env.MESSAGE_TABLE;
   }
 
-  async addUser(connectionId, roomId, username) {
+  async addUser(connectionId, room, username) {
     let ttl = Math.floor(Date.now() / 1000 + 86400);
     const params = {
       TableName: this.userTable,
       Item: {
         connectionId,
-        roomId,
+        room,
         username,
         ttl,
       },
@@ -61,66 +61,47 @@ export default class DynamoDBClient {
     }
   }
 
-  async getRoomParticipants(roomId) {
+  async getRoomParticipants(room) {
     const params = {
       TableName: this.userTable,
       IndexName: this.roomIndex,
-      KeyConditionExpression: "roomId = :r",
+      KeyConditionExpression: "room = :r",
       ExpressionAttributeValues: {
-        ":r": roomId,
+        ":r": room,
       },
     };
 
     try {
       const { Items } = await this.client.query(params).promise();
-      console.log(Items);
       return Items;
     } catch (err) {
       console.log(err);
-      throw new Error(`failed to get participants from room: ${roomId}`);
+      throw new Error(`failed to get participants from room: ${room}`);
     }
   }
 
-  async getRoomHistory(roomId) {
+  async getRoomHistory(room) {
     const params = {
       TableName: this.messageTable,
-      KeyConditionExpression: "roomId = :r",
+      KeyConditionExpression: "room = :r",
       ExpressionAttributeValues: {
-        ":r": roomId,
+        ":r": room,
       },
     };
 
     try {
       const { Items } = await this.client.query(params).promise();
-      console.log(Items);
       return Items;
     } catch (err) {
       throw new Error("failed to get user");
     }
   }
 
-  // async getMessage(roomId, dateTime) {
-  //   const params = {
-  //     Tablename: this.messageTable,
-  //     Key: {
-  //       roomId,
-  //       dateTime,
-  //     },
-  //   };
-  //   try {
-  //     const { Item } = await this.client.get(params).promise();
-  //     return Item;
-  //   } catch (err) {
-  //     console.log(err);
-  //     throw new Error("failed to get message");
-  //   }
-  // }
-
-  async addRoomTextMessage(roomId, dateTime, username, message, type) {
+  async addRoomTextMessage(room, dateTime, username, message, type) {
     const params = {
       TableName: this.messageTable,
       Item: {
-        roomId,
+        room,
         dateTime,
         username,
         message,
@@ -137,7 +118,7 @@ export default class DynamoDBClient {
   }
 
   async addRoomFileMessage(
-    roomId,
+    room,
     dateTime,
     username,
     filename,
@@ -148,7 +129,7 @@ export default class DynamoDBClient {
     const params = {
       TableName: this.messageTable,
       Item: {
-        roomId,
+        room,
         dateTime,
         username,
         filename,

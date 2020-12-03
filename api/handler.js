@@ -3,9 +3,11 @@ import WebsocketClient from "./libs/websocketClient";
 import * as AWS from "aws-sdk";
 import { v4 } from "uuid";
 
-let domainName = "89rqvefb8d.execute-api.ap-southeast-1.amazonaws.com";
 const dbClient = new DynamoDBClient();
-let wsClient = new WebsocketClient(domainName, "dev");
+let wsClient = new WebsocketClient(
+  process.env.WEBSOCKET_URL.replace("wss://", ""),
+  process.env.STAGE
+);
 const s3 = new AWS.S3();
 
 export const connectHandler = async () => {
@@ -14,11 +16,10 @@ export const connectHandler = async () => {
 
 export const disconnectHandler = async (event) => {
   const { connectionId } = event.requestContext;
-  console.log(event);
 
   try {
     const Attributes = await dbClient.removeUser(connectionId);
-    const Items = await dbClient.getRoomParticipants(Attributes.roomId);
+    const Items = await dbClient.getRoomParticipants(Attributes.room);
     const connections = Items.map((item) => item.connectionId);
     const participants = Items.map((item) => item.username);
     await wsClient.send(connections, participants, "join");
@@ -33,6 +34,7 @@ export const disconnectHandler = async (event) => {
 export const joinHandler = async (event) => {
   const { connectionId } = event.requestContext;
   const { room, username } = JSON.parse(event.body);
+
   try {
     await dbClient.addUser(connectionId, room, username);
     const Items = await dbClient.getRoomParticipants(room);
@@ -50,6 +52,7 @@ export const joinHandler = async (event) => {
 export const historyHandler = async (event) => {
   const { connectionId } = event.requestContext;
   const { room } = JSON.parse(event.body);
+
   try {
     const history = await dbClient.getRoomHistory(room);
     await wsClient.send([connectionId], history, "history");
@@ -65,24 +68,23 @@ export const messageHandler = async (event) => {
   const { connectionId } = event.requestContext;
   const { message } = JSON.parse(event.body);
 
-  console.log(event);
   try {
-    const { roomId, username } = await dbClient.getUser(connectionId);
+    const { room, username } = await dbClient.getUser(connectionId);
     const messageObj = {
-      roomId,
+      room,
       dateTime: Math.floor(Date.now() / 1000),
       username,
       message,
       type: "text",
     };
     await dbClient.addRoomTextMessage(
-      roomId,
+      room,
       messageObj.dateTime,
       username,
       message,
       messageObj.type
     );
-    const Items = await dbClient.getRoomParticipants(roomId);
+    const Items = await dbClient.getRoomParticipants(room);
     const connections = Items.map((item) => item.connectionId);
 
     await wsClient.send(connections, messageObj, "message");
@@ -112,6 +114,7 @@ export const defaultHandler = async (event) => {
 
 export const generateUploadUrl = async (event) => {
   const { room, username, filename, filetype } = JSON.parse(event.body);
+
   try {
     const url = s3.getSignedUrl("putObject", {
       Bucket: process.env.FILE_BUCKET,
@@ -134,6 +137,7 @@ export const generateUploadUrl = async (event) => {
 
 export const generateDownloadUrl = async (event) => {
   const { room, username, id, filename } = JSON.parse(event.body);
+
   try {
     const url = s3.getSignedUrl("getObject", {
       Bucket: process.env.FILE_BUCKET,
@@ -157,12 +161,12 @@ export const generateDownloadUrl = async (event) => {
 export const fileHandler = async (event) => {
   const body = event.Records[0].s3;
   const filesize = body.object.size;
-  const [roomId, username, compositeFilename] = body.object.key.split("/");
+  const [room, username, compositeFilename] = body.object.key.split("/");
   const [id, filename] = compositeFilename.split(/_(.+)/);
 
   try {
     const fileObj = {
-      roomId,
+      room,
       dateTime: Math.floor(Date.now() / 1000),
       username,
       filename,
@@ -171,7 +175,7 @@ export const fileHandler = async (event) => {
       type: "file",
     };
     await dbClient.addRoomFileMessage(
-      roomId,
+      room,
       fileObj.dateTime,
       username,
       filename,
@@ -179,7 +183,7 @@ export const fileHandler = async (event) => {
       id,
       "file"
     );
-    const Items = await dbClient.getRoomParticipants(roomId);
+    const Items = await dbClient.getRoomParticipants(room);
     const connections = Items.map((item) => item.connectionId);
     await wsClient.send(connections, fileObj, "message");
   } catch (err) {
