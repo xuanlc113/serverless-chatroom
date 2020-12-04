@@ -20,6 +20,7 @@ This mini project was created to put into practice AWS serverless technologies.
 ## Program Flow
 
 ![Program Flow](/Structure.png)
+Used S3 presigned urls for file sharing as API Gateway Websocket does not support binary frames
 
 ## Setting up development environment
 
