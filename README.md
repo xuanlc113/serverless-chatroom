@@ -1,6 +1,6 @@
 # Serverless Chatrooms
 
-![Program Flow](/Preview.png)
+![Client Preview](/Client.png)
 
 Online chatrooms that anybody can join via url. It supports text and file sharing.
 This mini project was created to put into practice AWS serverless technologies.
